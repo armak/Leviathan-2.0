@@ -23,3 +23,4 @@ Creates a bigger exe similar to Debug, but with keyboard controls for pausing an
 * More preprocessor macros for shader passes.
 * Incorporate shader_minifier into the "build chain".
 * Make the Debug configurations generate some actually useful debug info.
+* Probably remove "CLEAN_EXIT".
