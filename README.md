@@ -16,7 +16,7 @@ By default includes some debug options, especially for OpenGL. Check out debug.h
 Creates a bigger exe similar to Debug, but with keyboard controls for pausing and seeking around temporally. Reguires a pre-rendered copy of the audio track used (well, not a must but...). Overwrites Debug configuration binaries.
 
 ## TODO
-* Fix warnings.
+* Fix warnings (well, SOME of them).
 * Automatically dump audio in Editor mode if no .wav already exists.
 * Support for more softsynths?
 * Editor mode overlays (non-interactive seekbar, etc.).
