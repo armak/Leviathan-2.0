@@ -19,7 +19,7 @@ Creates a bigger exe similar to Debug, but with keyboard controls for pausing an
 * Fix warnings.
 * Automatically dump audio in Editor mode if no .wav already exists.
 * Support for more softsynths?
-* Editor more overlays (non-interactive seekbar, etc.).
+* Editor mode overlays (non-interactive seekbar, etc.).
 * More preprocessor macros for shader passes.
 * Incorporate shader_minifier into the "build chain".
 * Make the Debug configurations generate some actually useful debug info.
