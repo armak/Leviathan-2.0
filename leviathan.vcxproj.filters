@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\song.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\4klang\4klang.h" />
+    <ClInclude Include="src\debug.h" />
+    <ClInclude Include="src\definitions.h" />
+    <ClInclude Include="src\glext.h">
+      <Filter>ext</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fp.h">
+      <Filter>ext</Filter>
+    </ClInclude>
+    <ClInclude Include="src\song.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\shaders\post.inl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="src\shaders\fragment.inl">
+      <Filter>shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ext">
+      <UniqueIdentifier>{3ade9a72-96b0-4936-93c4-4926808a1ab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{84f225d6-acf8-4151-aab3-e246410cdeba}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

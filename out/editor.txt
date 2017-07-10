@@ -1,0 +1,5 @@
+place your pre-rendered audio for the editor here
+it is by default loaded from file 'audio.wav'
+
+you can download an example from
+http://noby.untergrund.net/misc/audio.wav
