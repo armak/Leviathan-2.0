@@ -1,5 +1,5 @@
 # Leviathan-2.0
-The new generation of 4k intro frameworks.
+The new generation of 4k intro frameworks. Currently very early in development but seems stable and usable enough give for testing.
 
 ## Compatibility
 Works in all versions of Visual Studio 2015. Probably in 2013 and 2017 as well but not tested.
