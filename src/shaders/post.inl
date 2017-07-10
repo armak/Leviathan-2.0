@@ -24,7 +24,7 @@ static const char* post = \
 "}";
 */
 
-// Mipmap depth of field!
+// Mipmap fake glossy thing!
 #pragma data_seg(".shader")
 static const char* post = \
 "#version 130\n"
@@ -38,9 +38,7 @@ static const char* post = \
 		"float s1 = hash(float(t+dot(uv,uv)));"
 		"float s2 = hash(float(1-t+dot(uv,uv)));"
 		"vec2 f = 0.01*(-1.0+2.0*vec2(s1,s2));"
-		//"uv *=(1.0+0.5*f);"
 		"i += vec4(textureLod(o, uv, (0.3+0.7*s1)*texture(o, (1.0+1.0*f)*uv).a*8).rgb,1);"
 	"}"
 	"i /= vec4(25);"
-	//"i.rgb = vec3(texture(o, uv).a);"
 "}";
