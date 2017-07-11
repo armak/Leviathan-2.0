@@ -10,8 +10,8 @@
 	#define CLEAN_EXIT   0
 	#define DESPERATE    0
 #else
-	#define OPENGL_DEBUG 1
-	#define FULLSCREEN   0
+	#define OPENGL_DEBUG 0
+	#define FULLSCREEN   1
 	#define CLEAN_EXIT   0
 	#define DESPERATE    0
 #endif
@@ -24,7 +24,6 @@
 	#include "debug.h"
 #endif
 
-#include "glext.h"
 #include "shaders/fragment.inl"
 #if TWO_PASS
 	#include "shaders/post.inl"
@@ -71,6 +70,31 @@ int CALLBACK WinMain(HINSTANCE prev, HINSTANCE self, LPSTR cmd, int show)
 		waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
 		waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
 	#else
+		GLuint hud_fbo;
+		((PFNGLGENFRAMEBUFFERSPROC)wglGetProcAddress("glGenFramebuffers"))(1, &hud_fbo);
+		((PFNGLBINDFRAMEBUFFERPROC)wglGetProcAddress("glBindFramebuffer"))(GL_FRAMEBUFFER, hud_fbo);
+		CHECK_ERRORS();
+		unsigned int hud_tex;
+		glGenTextures(1, &hud_tex);
+		CHECK_ERRORS();
+		glBindTexture(GL_TEXTURE_2D, hud_tex);
+		CHECK_ERRORS();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, XRES, YRES, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		CHECK_ERRORS();
+		glBindTexture(GL_TEXTURE_2D, 0);
+		CHECK_ERRORS();
+		((PFNGLFRAMEBUFFERTEXTURE2DPROC)wglGetProcAddress("glFramebufferTexture2D"))(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, hud_tex, 0);
+		CHECK_ERRORS();
+		((PFNGLBINDFRAMEBUFFERPROC)wglGetProcAddress("glBindFramebuffer"))(GL_FRAMEBUFFER, 0);
+		CHECK_ERRORS();
+
+		shaderDebug(hud);
+		const int hid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &hud);
+
 		double position = 0.0;
 		song track(L"audio.wav");
 		track.play();
@@ -91,12 +115,35 @@ int CALLBACK WinMain(HINSTANCE prev, HINSTANCE self, LPSTR cmd, int show)
 		#ifndef EDITOR_CONTROLS
 			waveOutGetPosition(hWaveOut, &MMTime, sizeof(MMTIME));
 			// remember to divide your shader time variable with the SAMPLE_RATE (44100 with 4klang)
-			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
+			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, 4*44100+MMTime.u.sample);
 		#else
 			position = track.getTime();
-			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, ((int)(position*44100.0)));
+			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, ((int)((position+4.0)*44100.0)));
 		#endif
 		glRects(-1, -1, 1, 1);
+
+		#ifdef EDITOR_CONTROLS
+			//((PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture"))(GL_TEXTURE0);
+			CHECK_ERRORS();
+			((PFNGLBINDFRAMEBUFFERPROC)wglGetProcAddress("glBindFramebuffer"))(GL_FRAMEBUFFER, hud_fbo);
+			CHECK_ERRORS();
+			glDrawBuffer(GL_COLOR_ATTACHMENT0);
+			CHECK_ERRORS();
+			glBindTexture(GL_TEXTURE_2D, hud_tex);
+			CHECK_ERRORS();
+			((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(hid);
+			CHECK_ERRORS();
+			//((PFNGLUNIFORM1FPROC)wglGetProcAddress("glUniform1f"))(0, 4.0+position);
+			//CHECK_ERRORS();
+			((PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f"))(0, (float)XRES, (float)YRES);
+			CHECK_ERRORS();
+			glRects(-1, -1, 1, 1);
+			CHECK_ERRORS();
+			glBindTexture(GL_TEXTURE_2D, 0);
+			CHECK_ERRORS();
+			((PFNGLBINDFRAMEBUFFERPROC)wglGetProcAddress("glBindFramebuffer"))(GL_FRAMEBUFFER, 0);
+			CHECK_ERRORS();
+		#endif
 
 		// render "post process" using the opengl backbuffer
 		#if TWO_PASS

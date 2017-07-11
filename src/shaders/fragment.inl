@@ -257,5 +257,5 @@ static const char* fragment = \
 		"col = mix(col,0.5+0.5*vec3(col*dot(n, normalize(p-vec3(99,-99,0)))), 0.3);\n"
 	"}\n"
 	"col = pow(col*brg/sqrt(2.+dot(v*0.3,v*0.3)), vec3(1./2.2));\n"
-	"o = vec4(cc(col-0.035*hash(length(q)*t)), p.y<0.1?tile*distance(p, rp)/10.0:0.0 );\n"
+	"o = vec4(cc(col-0.025*hash(length(q)*t)), p.y<0.1?tile*distance(p, rp)/10.0:0.0 );\n"
 "}";
