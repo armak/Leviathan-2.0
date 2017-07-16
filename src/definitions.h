@@ -1,6 +1,12 @@
 // This header contains necessary structures for setting up correct screen modes,
 // pixel formats, audio formats, and so on.
 
+// minify windows.h
+#define WIN32_LEAN_AND_MEAN
+#define WIN32_EXTRA_LEAN
+#define VC_LEANMEAN
+#define VC_EXTRALEAN
+
 #include <windows.h>
 #include <GL/gl.h>
 #include <mmsystem.h>

@@ -1,8 +1,3 @@
-#define WIN32_LEAN_AND_MEAN
-#define WIN32_EXTRA_LEAN
-#define VC_LEANMEAN
-#define VC_EXTRALEAN
-
 // custom build and feature flags
 #ifdef DEBUG
 	#define OPENGL_DEBUG 1
@@ -18,6 +13,7 @@
 
 #define TWO_PASS     1
 #define USE_MIPMAPS  1
+#define USE_AUDIO    1 // TODO: this
 
 #include "definitions.h"
 #if OPENGL_DEBUG
