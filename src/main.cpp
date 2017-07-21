@@ -4,7 +4,7 @@
 	#define FULLSCREEN          0
 	#define CLEAN_EXIT          0
 	#define DESPERATE           0
-    #define BREAK_COMPATIBILITY 0
+	#define BREAK_COMPATIBILITY 0
 #else
 	#define OPENGL_DEBUG        0
 	#define FULLSCREEN          1
