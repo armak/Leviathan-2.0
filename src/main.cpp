@@ -1,19 +1,21 @@
 // custom build and feature flags
 #ifdef DEBUG
-	#define OPENGL_DEBUG 1
-	#define FULLSCREEN   0
-	#define CLEAN_EXIT   0
-	#define DESPERATE    0
+	#define OPENGL_DEBUG        1
+	#define FULLSCREEN          0
+	#define CLEAN_EXIT          0
+	#define DESPERATE           0
+    #define BREAK_COMPATIBILITY 0
 #else
-	#define OPENGL_DEBUG 1
-	#define FULLSCREEN   0
-	#define CLEAN_EXIT   0
-	#define DESPERATE    0
+	#define OPENGL_DEBUG        0
+	#define FULLSCREEN          1
+	#define CLEAN_EXIT          0
+	#define DESPERATE           0
+	#define BREAK_COMPATIBILITY 0
 #endif
 
 #define TWO_PASS    1
 #define USE_MIPMAPS 1
-#define USE_AUDIO   1 // TODO: this
+#define USE_AUDIO   1
 #define NO_UNIFORMS 0
 
 #include "definitions.h"
@@ -31,7 +33,7 @@
 void entrypoint(void)
 #else
 #include "song.h"
-int CALLBACK WinMain(HINSTANCE prev, HINSTANCE self, LPSTR cmd, int show)
+int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif
 {
 	// initialize window
@@ -63,12 +65,14 @@ int CALLBACK WinMain(HINSTANCE prev, HINSTANCE self, LPSTR cmd, int show)
 
 	// initialize sound
 	#ifndef EDITOR_CONTROLS
-		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, lpSoundBuffer, 0, 0);
-		waveOutOpen(&hWaveOut, WAVE_MAPPER, &WaveFMT, NULL, 0, CALLBACK_NULL);
-		waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
-		waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+		#if USE_AUDIO
+			CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, lpSoundBuffer, 0, 0);
+			waveOutOpen(&hWaveOut, WAVE_MAPPER, &WaveFMT, NULL, 0, CALLBACK_NULL);
+			waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+			waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+		#endif
 	#else
-		double position = 0.0;
+		long double position = 0.0;
 		song track(L"audio.wav");
 		track.play();
 	#endif
@@ -86,13 +90,16 @@ int CALLBACK WinMain(HINSTANCE prev, HINSTANCE self, LPSTR cmd, int show)
 		// render with the primary shader
 		((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(pid);
 		#ifndef EDITOR_CONTROLS
-			waveOutGetPosition(hWaveOut, &MMTime, sizeof(MMTIME));
-			// it is possible to upload your vars as vertex color attribute (gl_Color) to save one function import
-			#if NO_UNIFORMS
-				glColor3ui(MMTime.u.sample, 0, 0);
-			#else
-				// remember to divide your shader time variable with the SAMPLE_RATE (44100 with 4klang)
-				((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
+			// if you don't have an audio system figure some other way to pass time to your shader
+			#if USE_AUDIO
+				// it is possible to upload your vars as vertex color attribute (gl_Color) to save one function import
+				#if NO_UNIFORMS
+					glColor3ui(MMTime.u.sample, 0, 0);
+				#else
+					waveOutGetPosition(hWaveOut, &MMTime, sizeof(MMTIME));
+					// remember to divide your shader time variable with the SAMPLE_RATE (44100 with 4klang)
+					((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
+				#endif
 			#endif
 		#else
 			position = track.getTime();
@@ -134,7 +141,11 @@ int CALLBACK WinMain(HINSTANCE prev, HINSTANCE self, LPSTR cmd, int show)
 				track.seek(position);
 			}
 		#endif
-	} while(!GetAsyncKeyState(VK_ESCAPE) && MMTime.u.sample < MAX_SAMPLES);
+	} while(!GetAsyncKeyState(VK_ESCAPE)
+		#if USE_AUDIO
+			&& MMTime.u.sample < MAX_SAMPLES
+		#endif
+	);
 
 	#if CLEAN_EXIT
 		ChangeDisplaySettings(0, 0);

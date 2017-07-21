@@ -31,7 +31,7 @@ static GLchar* getErrorString(GLenum errorCode)
 	return (GLchar*) "Unknown";
 }
 
-static void assertGlError(const char* error_message, bool halt)
+static void assertGlError(const char* error_message)
 {
 	const GLenum ErrorValue = glGetError();
 	if (ErrorValue == GL_NO_ERROR) return;
@@ -69,4 +69,4 @@ static void shaderDebug(const char* shader)
 
 #define STRINGIFY2(x) #x // Thanks sooda!
 #define STRINGIFY(x) STRINGIFY2(x)
-#define CHECK_ERRORS() assertGlError(STRINGIFY(__LINE__), true)
+#define CHECK_ERRORS() assertGlError(STRINGIFY(__LINE__))
