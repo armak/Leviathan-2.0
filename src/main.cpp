@@ -6,7 +6,7 @@
 	#define DESPERATE    0
 #else
 	#define OPENGL_DEBUG 1
-	#define FULLSCREEN   0
+	#define FULLSCREEN   1
 	#define CLEAN_EXIT   0
 	#define DESPERATE    0
 #endif
@@ -30,7 +30,7 @@
 void entrypoint(void)
 #else
 #include "song.h"
-int CALLBACK WinMain(HINSTANCE prev, HINSTANCE self, LPSTR cmd, int show)
+int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif
 {
 	// initialize window
@@ -67,7 +67,7 @@ int CALLBACK WinMain(HINSTANCE prev, HINSTANCE self, LPSTR cmd, int show)
 		waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
 		waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
 	#else
-		double position = 0.0;
+		long double position = 0.0;
 		song track(L"audio.wav");
 		track.play();
 	#endif

@@ -21,21 +21,18 @@
 
 #pragma data_seg(".pixelfmt")
 static const PIXELFORMATDESCRIPTOR pfd = {
-	sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_DRAW_TO_WINDOW|PFD_SUPPORT_OPENGL|PFD_DOUBLEBUFFER, PFD_TYPE_RGBA,
-	32, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
+	0, 0, PFD_DRAW_TO_WINDOW|PFD_SUPPORT_OPENGL|PFD_DOUBLEBUFFER, PFD_TYPE_RGBA,
+	0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0
+};
 
 #pragma data_seg(".screensettings")
-static DEVMODE screenSettings = { {0},
-	#if _MSC_VER < 1400 // Visual C++ 6.0
-	0,0,148,0,0x001c0000,{0},0,0,0,0,0,0,0,0,0,{0},0,32,XRES,YRES,0,0,      
-	#else
-	0,0,156,0,0x001c0000,{0},0,0,0,0,0,{0},0,32,XRES,YRES,{0}, 0, 
-	#endif
+static DEVMODE screenSettings = {
+    {0}, 0, 0, 0, 156, 0, 0x001c0000, {0}, 0, 0, 0, 0, 0, {0}, 0, 32, XRES, YRES, {0}, 0,
 	#if(WINVER >= 0x0400)
-	0,0,0,0,0,0,
-	#if (WINVER >= 0x0500) || (_WIN32_WINNT >= 0x0400)
-	0,0
-	#endif
+	    0, 0, 0, 0, 0, 0,
+	    #if (WINVER >= 0x0500) || (_WIN32_WINNT >= 0x0400)
+	    0, 0
+	    #endif
 	#endif
 };
 
