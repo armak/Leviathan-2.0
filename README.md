@@ -1,6 +1,13 @@
 # Leviathan-2.0
 The new generation of 4k intro frameworks. Currently very early in development but seems stable and usable enough give for testing.
 
+## Acknowledgements
+* Rimina for initial inspiration and OpenGL debug functions.
+* LJ for giving information about some nice hacks!
+* Fizzer for giving me help actually implementing those hacks.
+* iq for the original framework.
+* Mentor and Blueberry for Crinkler.
+
 ## Compatibility
 Works in all versions of Visual Studio 2015. Probably in 2013 and 2017 as well but not tested.
 
@@ -20,7 +27,6 @@ Creates a bigger exe similar to Debug, but with keyboard controls for pausing an
 * Automatically dump audio in Editor mode if no .wav already exists.
 * Support for more softsynths?
 * Editor mode overlays (non-interactive seekbar, etc.).
-* More preprocessor macros for shader passes.
+* More preprocessor macros for additional shader passes.
 * Incorporate shader_minifier into the "build chain".
 * Make the Debug configurations generate some actually useful debug info.
-* Probably remove "CLEAN_EXIT".
