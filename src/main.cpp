@@ -90,11 +90,11 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		#ifndef EDITOR_CONTROLS
 			// if you don't have an audio system figure some other way to pass time to your shader
 			#if USE_AUDIO
+				waveOutGetPosition(hWaveOut, &MMTime, sizeof(MMTIME));
 				// it is possible to upload your vars as vertex color attribute (gl_Color) to save one function import
 				#if NO_UNIFORMS
 					glColor3ui(MMTime.u.sample, 0, 0);
 				#else
-					waveOutGetPosition(hWaveOut, &MMTime, sizeof(MMTIME));
 					// remember to divide your shader time variable with the SAMPLE_RATE (44100 with 4klang)
 					((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
 				#endif
