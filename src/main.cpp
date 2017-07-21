@@ -6,7 +6,7 @@
 	#define DESPERATE           0
     #define BREAK_COMPATIBILITY 0
 #else
-	#define OPENGL_DEBUG        1
+	#define OPENGL_DEBUG        0
 	#define FULLSCREEN          1
 	#define CLEAN_EXIT          0
 	#define DESPERATE           0
@@ -15,7 +15,7 @@
 
 #define TWO_PASS     1
 #define USE_MIPMAPS  1
-#define USE_AUDIO    1 // TODO: this
+#define USE_AUDIO    1
 
 #include "definitions.h"
 #if OPENGL_DEBUG
@@ -64,10 +64,12 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// initialize sound
 	#ifndef EDITOR_CONTROLS
-		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, lpSoundBuffer, 0, 0);
-		waveOutOpen(&hWaveOut, WAVE_MAPPER, &WaveFMT, NULL, 0, CALLBACK_NULL);
-		waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
-		waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+		#if USE_AUDIO
+			CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, lpSoundBuffer, 0, 0);
+			waveOutOpen(&hWaveOut, WAVE_MAPPER, &WaveFMT, NULL, 0, CALLBACK_NULL);
+			waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+			waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+		#endif
 	#else
 		long double position = 0.0;
 		song track(L"audio.wav");
@@ -87,9 +89,12 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		// render with the primary shader
 		((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(pid);
 		#ifndef EDITOR_CONTROLS
-			waveOutGetPosition(hWaveOut, &MMTime, sizeof(MMTIME));
-			// remember to divide your shader time variable with the SAMPLE_RATE (44100 with 4klang)
-			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
+			// if you don't have an audio system figure some other way to pass time to your shader
+			#if USE_AUDIO
+				waveOutGetPosition(hWaveOut, &MMTime, sizeof(MMTIME));
+				// remember to divide your shader time variable with the SAMPLE_RATE (44100 with 4klang)
+				((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
+			#endif
 		#else
 			position = track.getTime();
 			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, ((int)(position*44100.0)));
@@ -130,7 +135,11 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				track.seek(position);
 			}
 		#endif
-	} while(!GetAsyncKeyState(VK_ESCAPE) && MMTime.u.sample < MAX_SAMPLES);
+	} while(!GetAsyncKeyState(VK_ESCAPE)
+		#if USE_AUDIO
+			&& MMTime.u.sample < MAX_SAMPLES
+		#endif
+	);
 
 	#if CLEAN_EXIT
 		ChangeDisplaySettings(0, 0);
