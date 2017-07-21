@@ -2,13 +2,11 @@
 #ifdef DEBUG
 	#define OPENGL_DEBUG        1
 	#define FULLSCREEN          0
-	#define CLEAN_EXIT          0
 	#define DESPERATE           0
     #define BREAK_COMPATIBILITY 0
 #else
 	#define OPENGL_DEBUG        0
 	#define FULLSCREEN          1
-	#define CLEAN_EXIT          0
 	#define DESPERATE           0
 	#define BREAK_COMPATIBILITY 0
 #endif
@@ -147,9 +145,5 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		#endif
 	);
 
-	#if CLEAN_EXIT
-		ChangeDisplaySettings(0, 0);
-		ShowCursor(1);
-	#endif
 	ExitProcess(0);
 }
