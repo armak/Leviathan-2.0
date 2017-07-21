@@ -11,9 +11,10 @@
 	#define DESPERATE    0
 #endif
 
-#define TWO_PASS     1
-#define USE_MIPMAPS  1
-#define USE_AUDIO    1 // TODO: this
+#define TWO_PASS    1
+#define USE_MIPMAPS 1
+#define USE_AUDIO   1 // TODO: this
+#define NO_UNIFORMS 0
 
 #include "definitions.h"
 #if OPENGL_DEBUG
@@ -86,8 +87,13 @@ int CALLBACK WinMain(HINSTANCE prev, HINSTANCE self, LPSTR cmd, int show)
 		((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(pid);
 		#ifndef EDITOR_CONTROLS
 			waveOutGetPosition(hWaveOut, &MMTime, sizeof(MMTIME));
-			// remember to divide your shader time variable with the SAMPLE_RATE (44100 with 4klang)
-			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
+			// it is possible to upload your vars as vertex color attribute (gl_Color) to save one function import
+			#if NO_UNIFORMS
+				glColor3ui(MMTime.u.sample, 0, 0);
+			#else
+				// remember to divide your shader time variable with the SAMPLE_RATE (44100 with 4klang)
+				((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
+			#endif
 		#else
 			position = track.getTime();
 			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, ((int)(position*44100.0)));
