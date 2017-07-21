@@ -1,14 +1,16 @@
 // custom build and feature flags
 #ifdef DEBUG
-	#define OPENGL_DEBUG 1
-	#define FULLSCREEN   0
-	#define CLEAN_EXIT   0
-	#define DESPERATE    0
+	#define OPENGL_DEBUG        1
+	#define FULLSCREEN          0
+	#define CLEAN_EXIT          0
+	#define DESPERATE           0
+    #define BREAK_COMPATIBILITY 0
 #else
-	#define OPENGL_DEBUG 1
-	#define FULLSCREEN   1
-	#define CLEAN_EXIT   0
-	#define DESPERATE    0
+	#define OPENGL_DEBUG        1
+	#define FULLSCREEN          1
+	#define CLEAN_EXIT          0
+	#define DESPERATE           0
+	#define BREAK_COMPATIBILITY 0
 #endif
 
 #define TWO_PASS     1
