@@ -32,4 +32,12 @@
       <UniqueIdentifier>{84f225d6-acf8-4151-aab3-e246410cdeba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\shaders\post.frag">
+      <Filter>shaders</Filter>
+    </Text>
+    <Text Include="src\shaders\fragment.frag">
+      <Filter>shaders</Filter>
+    </Text>
+  </ItemGroup>
 </Project>
