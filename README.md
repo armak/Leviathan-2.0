@@ -50,3 +50,4 @@ Enables using the gl_Color vertex attribute to pass variables to the shader inst
 * Editor mode overlays (non-interactive seekbar, etc.).
 * More preprocessor macros for additional shader passes.
 * Make the Debug configurations generate some actually useful debug info.
+* Maybe figure out something better to replace #define hell...
