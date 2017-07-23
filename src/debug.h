@@ -43,7 +43,7 @@ static void assertGlError(const char* error_message)
 	ExitProcess(0);
 }
 
-static void shaderDebug(const char* shader)
+static bool shaderDebug(const char* shader, bool kill_on_failure = true)
 {
 	// try and compile the shader 
 	int result;
@@ -59,14 +59,71 @@ static void shaderDebug(const char* shader)
 		char info[2048];
 		((PFNGLGETSHADERINFOLOGPROC) wglGetProcAddress("glGetShaderInfoLog"))(debugid, 2047, NULL, (char*)info);
 		MessageBox(NULL, info, "", 0x00000000L);
-		ExitProcess(0);
+		if(kill_on_failure)
+		{
+			ExitProcess(0);
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else
 	{
 		((PFNGLDELETESHADERPROC)wglGetProcAddress("glDeleteShader"))(debugid);
+		return true;
 	}
 }
 
 #define STRINGIFY2(x) #x // Thanks sooda!
 #define STRINGIFY(x) STRINGIFY2(x)
 #define CHECK_ERRORS() assertGlError(STRINGIFY(__LINE__))
+
+#ifdef EDITOR_CONTROLS
+	#include <stdlib.h>
+	#include <stdio.h>
+
+	static int start;
+	static unsigned long long lastLoad;
+
+	char* updateShader(const char* filename)
+	{
+		char* shaderString;
+		long inputSize;
+		FILE* file = fopen(filename, "r");
+
+		fseek(file, 0, SEEK_END);
+		inputSize = ftell(file);
+		rewind(file);
+		shaderString = (char*) malloc(inputSize * (sizeof(char)));
+		fread(shaderString, sizeof(char), inputSize, file);
+		fclose(file);
+
+		return shaderString;
+	}
+
+	void refreshShaders(int& pid, int& pi2)
+	{
+		if (GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState('S'))
+		{
+			if (timeGetTime() - lastLoad > 500) {
+				Sleep(250);
+				char* newSource = updateShader("../src/shaders/fragment.frag");
+				if (!shaderDebug(newSource, false))
+				{
+					MessageBox(NULL, newSource, "", 0x00000000L);
+				}
+				pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &newSource);
+
+				newSource = updateShader("../src/shaders/post.frag");
+				if (!shaderDebug(newSource, false))
+				{
+					MessageBox(NULL, newSource, "", 0x00000000L);
+				}
+				pi2 = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &newSource);
+			}
+			lastLoad = timeGetTime()-start;
+			
+		}
+	}
+#endif

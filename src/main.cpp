@@ -40,24 +40,42 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		ShowCursor(0);
 		const HDC hDC = GetDC(CreateWindow((LPCSTR)0xC018, 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0));
 	#else
-		HDC hDC = GetDC(CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0));
+		#ifdef EDITOR_CONTROLS
+			HWND window = CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0);
+			HDC hDC = GetDC(window);
+		#else
+			HDC hDC = GetDC(CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0));
+		#endif
 	#endif	
 
 	// initalize opengl
 	SetPixelFormat(hDC, ChoosePixelFormat(hDC, &pfd), &pfd);
 	wglMakeCurrent(hDC, wglCreateContext(hDC));
-	const int pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
+	#ifdef EDITOR_CONTROLS
+		int pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
+	#else
+		const int pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
+	#endif
 	#if TWO_PASS
-		const int pi2 = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
-		// not really needed, as long as tid is some value > 0
-		//unsigned int tid;
-		//glGenTextures(1, &tid);
+		#ifdef EDITOR_CONTROLS
+			int pi2 = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
+		#else
+			const int pi2 = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
+		#endif
 	#endif
 
 	#if OPENGL_DEBUG
-		shaderDebug(fragment);
+		shaderDebug(fragment
+			#ifdef EDITOR_CONTROLS
+				,false
+			#endif
+		);
 		#if TWO_PASS
-			shaderDebug(post);
+			shaderDebug(post
+				#ifdef EDITOR_CONTROLS
+					,false
+				#endif
+			);
 		#endif
 	#endif
 
@@ -73,6 +91,7 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		long double position = 0.0;
 		song track(L"audio.wav");
 		track.play();
+		start = timeGetTime();
 	#endif
 
 	// main loop
@@ -100,6 +119,7 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				#endif
 			#endif
 		#else
+			refreshShaders(pid, pi2);
 			position = track.getTime();
 			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, ((int)(position*44100.0)));
 		#endif
@@ -126,17 +146,20 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		// pausing and seeking enabled in debug mode
 		#ifdef EDITOR_CONTROLS
-			double seek = 0.0;
-			if(GetAsyncKeyState(VK_DOWN)) track.pause();
-			if(GetAsyncKeyState(VK_UP))   track.play();
-			if(GetAsyncKeyState(VK_RIGHT) && !GetAsyncKeyState(VK_SHIFT)) seek += 1.0;
-			if(GetAsyncKeyState(VK_LEFT)  && !GetAsyncKeyState(VK_SHIFT)) seek -= 1.0;
-			if(GetAsyncKeyState(VK_RIGHT) && GetAsyncKeyState(VK_SHIFT))  seek += 0.1;
-			if(GetAsyncKeyState(VK_LEFT)  && GetAsyncKeyState(VK_SHIFT))  seek -= 0.1;
-			if(position+seek != position)
+			if(GetAsyncKeyState(VK_MENU))
 			{
-				position += seek;
-				track.seek(position);
+				double seek = 0.0;
+				if(GetAsyncKeyState(VK_DOWN)) track.pause();
+				if(GetAsyncKeyState(VK_UP))   track.play();
+				if(GetAsyncKeyState(VK_RIGHT) && !GetAsyncKeyState(VK_SHIFT)) seek += 1.0;
+				if(GetAsyncKeyState(VK_LEFT)  && !GetAsyncKeyState(VK_SHIFT)) seek -= 1.0;
+				if(GetAsyncKeyState(VK_RIGHT) && GetAsyncKeyState(VK_SHIFT))  seek += 0.1;
+				if(GetAsyncKeyState(VK_LEFT)  && GetAsyncKeyState(VK_SHIFT))  seek -= 0.1;
+				if(position+seek != position)
+				{
+					position += seek;
+					track.seek(position);
+				}
 			}
 		#endif
 	} while(!GetAsyncKeyState(VK_ESCAPE)

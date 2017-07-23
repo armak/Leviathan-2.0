@@ -210,7 +210,7 @@ shader_minifier.exe -v -o .\src\shaders\post.inl .\src\shaders\post.frag</Comman
       <EntryPointSymbol>
       </EntryPointSymbol>
       <EnableUAC>false</EnableUAC>
-      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
+      <FullProgramDatabaseFile>false</FullProgramDatabaseFile>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <Bscmake>

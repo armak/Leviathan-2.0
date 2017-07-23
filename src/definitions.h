@@ -10,6 +10,10 @@
 #include <windows.h>
 #include <GL/gl.h>
 
+#ifdef EDITOR_CONTROLS
+	#include <limits.h>
+#endif
+
 // global resolution
 #define XRES 1280
 #define YRES 720
