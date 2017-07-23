@@ -51,31 +51,16 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// initalize opengl
 	SetPixelFormat(hDC, ChoosePixelFormat(hDC, &pfd), &pfd);
 	wglMakeCurrent(hDC, wglCreateContext(hDC));
-	#ifdef EDITOR_CONTROLS
-		int pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
-	#else
-		const int pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
-	#endif
+	
+	PID_QUALIFIER int pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
 	#if TWO_PASS
-		#ifdef EDITOR_CONTROLS
-			int pi2 = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
-		#else
-			const int pi2 = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
-		#endif
+		PID_QUALIFIER int pi2 = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
 	#endif
 
 	#if OPENGL_DEBUG
-		#ifdef EDITOR_CONTROLS
-			shaderDebug(fragment, false);
-		#else
-			shaderDebug(fragment, true);
-		#endif
+			shaderDebug(fragment, FAIL_KILL);
 		#if TWO_PASS
-			#ifdef EDITOR_CONTROLS
-				shaderDebug(post, false);
-			#else
-				shaderDebug(post, true);
-			#endif
+				shaderDebug(post, FAIL_KILL);
 		#endif
 	#endif
 

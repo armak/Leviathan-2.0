@@ -10,10 +10,6 @@
 #include <windows.h>
 #include <GL/gl.h>
 
-#ifdef EDITOR_CONTROLS
-	#include <limits.h>
-#endif
-
 // global resolution
 #define XRES 1280
 #define YRES 720
@@ -86,3 +82,11 @@ static DEVMODE screenSettings = {
 #endif
 
 //extern "C" int _fltused = 0;
+
+#ifdef EDITOR_CONTROLS
+	#define FAIL_KILL false
+	#define PID_QUALIFIER
+#else
+	#define FAIL_KILL true
+	#define PID_QUALIFIER const
+#endif
