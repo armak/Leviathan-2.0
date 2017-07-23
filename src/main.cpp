@@ -65,17 +65,17 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	#endif
 
 	#if OPENGL_DEBUG
-		shaderDebug(fragment
-			#ifdef EDITOR_CONTROLS
-				,false
-			#endif
-		);
+		#ifdef EDITOR_CONTROLS
+			shaderDebug(fragment, false);
+		#else
+			shaderDebug(fragment, true);
+		#endif
 		#if TWO_PASS
-			shaderDebug(post
-				#ifdef EDITOR_CONTROLS
-					,false
-				#endif
-			);
+			#ifdef EDITOR_CONTROLS
+				shaderDebug(post, false);
+			#else
+				shaderDebug(post, true);
+			#endif
 		#endif
 	#endif
 
