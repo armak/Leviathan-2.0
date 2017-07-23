@@ -44,7 +44,7 @@ float map(vec3 p)
 		float d = (p.y);
 		vec2 r = mod2(p.zx, vec2(dist));
 		modp(p.zx, rep);
-		d = min(d, box((p-vec3(0.,1,9)), vec3(9,9,0.2)) );
+		d = min(d, box((p-vec3(0,1,9)), vec3(9,9,0.2)) );
 		d = min(d, box((p-vec3(-6,1,0)), vec3(0.2,9.,9)) );
 		d = min(d, box((p-vec3(6,1,-9)), vec3(0.2,9.,9)) );
 		d = max(d, -box((p-vec3(0,4,0)), vec3(1.5,4.,10)));

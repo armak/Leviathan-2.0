@@ -95,10 +95,12 @@ static bool shaderDebug(const char* shader, bool kill_on_failure = true)
 		fseek(file, 0, SEEK_END);
 		inputSize = ftell(file);
 		rewind(file);
-		shaderString = (char*) malloc(inputSize * (sizeof(char)));
+		shaderString = (char*) calloc(inputSize+1, sizeof(char));
 		fread(shaderString, sizeof(char), inputSize, file);
 		fclose(file);
 
+		// just to be sure...
+		shaderString[inputSize] = '\0';
 		return shaderString;
 	}
 
@@ -106,24 +108,18 @@ static bool shaderDebug(const char* shader, bool kill_on_failure = true)
 	{
 		if (GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState('S'))
 		{
-			if (timeGetTime() - lastLoad > 500) {
-				Sleep(250);
+			// make sure the file has finished writing to disk
+			if(timeGetTime() - lastLoad > 200) {
+				Sleep(100);
 				char* newSource = updateShader("../src/shaders/fragment.frag");
-				if (!shaderDebug(newSource, false))
-				{
-					MessageBox(NULL, newSource, "", 0x00000000L);
-				}
+				shaderDebug(newSource, false);
 				pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &newSource);
 
 				newSource = updateShader("../src/shaders/post.frag");
-				if (!shaderDebug(newSource, false))
-				{
-					MessageBox(NULL, newSource, "", 0x00000000L);
-				}
+				shaderDebug(newSource, false);
 				pi2 = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &newSource);
 			}
 			lastLoad = timeGetTime()-start;
-			
 		}
 	}
 #endif
