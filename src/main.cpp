@@ -58,9 +58,9 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	#endif
 
 	#if OPENGL_DEBUG
-			shaderDebug(fragment, FAIL_KILL);
+		shaderDebug(fragment, FAIL_KILL);
 		#if TWO_PASS
-				shaderDebug(post, FAIL_KILL);
+			shaderDebug(post, FAIL_KILL);
 		#endif
 	#endif
 
