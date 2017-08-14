@@ -114,10 +114,12 @@ static bool shaderDebug(const char* shader, bool kill_on_failure = true)
 				char* newSource = updateShader("../src/shaders/fragment.frag");
 				shaderDebug(newSource, false);
 				pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &newSource);
+				free(newSource);
 
 				newSource = updateShader("../src/shaders/post.frag");
 				shaderDebug(newSource, false);
 				pi2 = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &newSource);
+				free(newSource);
 			}
 			lastLoad = timeGetTime()-start;
 		}
