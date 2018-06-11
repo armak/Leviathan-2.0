@@ -11,7 +11,7 @@ The new generation of 4k intro frameworks. Currently very early in development b
 * Numerous people for various resources and information: auld, ps, cce, msqrt, ferris, yzi, las to name a few.
 
 ## Compatibility
-Works in all versions of Visual Studio 2015. Probably in 2013 and 2017 as well but not tested.
+Current version intended to be used with Visual Studio 2017 (any version). Make sure you have a version with the latest Windows SDK installed (at least version 10.0.17134.0), or use version 8.1. With some extra configuration 2015 and 2013 should work as well.
 
 ## Configurations
 This section describes the different build configurations available from Visual Studio IDE
@@ -44,10 +44,8 @@ Disabling this doesn't include or init 4klang at all.
 Enables using the gl_Color vertex attribute to pass variables to the shader instead of the usual uniform uploading. This saves one function import and around 10 bytes.
 
 ## TODO
-* Fix warnings (well, SOME of them).
 * Automatically dump audio in Editor mode if no .wav already exists.
 * Support for more softsynths?
 * Editor mode overlays (non-interactive seekbar, etc.).
 * More preprocessor macros for additional shader passes.
-* Make the Debug configurations generate some actually useful debug info.
 * Maybe figure out something better to replace #define hell...
