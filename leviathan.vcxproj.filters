@@ -23,6 +23,12 @@
     <None Include="src\shaders\fragment.inl">
       <Filter>shaders</Filter>
     </None>
+    <None Include="src\shaders\fragment.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="src\shaders\post.frag">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ext">
@@ -31,13 +37,5 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{84f225d6-acf8-4151-aab3-e246410cdeba}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="src\shaders\post.frag">
-      <Filter>shaders</Filter>
-    </Text>
-    <Text Include="src\shaders\fragment.frag">
-      <Filter>shaders</Filter>
-    </Text>
   </ItemGroup>
 </Project>
