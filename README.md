@@ -7,7 +7,7 @@ The new generation of 4k intro frameworks. Currently very early in development b
 * Fizzer for giving me help actually implementing those hacks.
 * iq for the original framework.
 * Mentor and Blueberry for Crinkler.
-* LBB for Shader Minifier. This fork is used in the framework: https://github.com/armak/Shader_Minifier.
+* LLB for Shader Minifier. This fork is used in the framework: https://github.com/armak/Shader_Minifier.
 * Numerous people for various resources and information: auld, ps, cce, msqrt, ferris, yzi, las to name a few.
 
 ## Compatibility
