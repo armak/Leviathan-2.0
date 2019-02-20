@@ -4,12 +4,32 @@ CRINKLER - Compressing linker for Windows specialized for 4k intros
 Aske Simon Christensen "Blueberry/Loonies"
 Rune L. H. Stubbe "Mentor/TBC"
 
-Version 2.0a (March 28, 2018)
+Version 2.1a (January 19, 2019)
 
 
 
 VERSION HISTORY
 ---------------
+19.01.19: 2.1a: Fixed width of report to make room for the 32 hex columns.
+                /REUSEMODE:WRITE to write the reuse file without reading it.
+
+18.12.18: 2.1:  Crinkler executable built for both 32 bit and 64 bit.
+                New, slightly different model estimation. 8-12x speedup.
+                Optimized section reordering. About 3-4x speedup.
+                Optimized and multi-threaded hash size optimization.
+                New /COMPMODE:VERYSLOW option for a few extra bytes.
+                Changed default compression mode to SLOW.
+                Changed default HASHSIZE to 500 and HASHTRIES to 100.
+                /REUSE option: Use models and ordering from last run.
+                /REUSEMODE:STABLE to quickly iterate when making changes.
+                /REUSEMODE:IMPROVE to improve upon previous compression.
+                Print output file size in report.
+                More compact bits-per-byte color legend in report.
+                Choose configuration instead of hiding/showing in report.
+                32 column hex view and other adjustments in report.
+                Avoid crash if an existing file could not be opened.
+                Updated internal function list to Windows version 1809.
+
 28.03.18: 2.0a: Fixed Crinkler crash on recent Windows SDK versions.
                 Fixed Crinkler crash on forwards from ole32.dll.
                 Corrected horizontal alignment issue in HTML report.
@@ -437,14 +457,18 @@ Linker/Command Line/Additional Options:
 /COMPMODE:INSTANT
 /COMPMODE:FAST
 /COMPMODE:SLOW
+/COMPMODE:VERYSLOW
 
-    Choose between three different compression modes. The FAST mode
-    usually compresses in a couple of seconds, while the SLOW one can
-    take up to a few minutes to complete. The slow one usually
-    compresses about 10-40 bytes better on a 4k executable. Use
-    INSTANT if you just want to check that your program works in
-    compressed form and don't care about the size. The default
-    compression mode is FAST.
+    Choose between four different algorithms for the model estimation.
+    The FAST compression mode performs a very quick estimation, whereas
+    the SLOW mode takes up to some tens of seconds for a typical 4k,
+    but also compresses significantly better. VERYSLOW is about 5-10x
+    slower than SLOW and typically a few bytes better. INSTANT skips
+    model estimation entirely and just uses a fixed set of models and
+    weights. It also skips section reordering and hash table size
+    optimization. Use INSTANT if you just want to check that your
+    program works in compressed form and don't care about the size.
+    The default compression mode is SLOW.
 
 /SATURATE
 
@@ -491,8 +515,8 @@ Linker/Command Line/Additional Options:
     an O(n^2) decompression time which can become prohibitively slow
     for files significantly larger than 1kb.
 
-    The HASHSIZE, HASHTRIES, COMPMODE, SATURATE and EXPORT options are
-    ignored when TINYHEADER is enabled.
+    The COMPMODE, HASHSIZE, HASHTRIES, REUSE, SATURATE and EXPORT
+    options are ignored when TINYHEADER is enabled.
 
 /TINYIMPORT
     Enables a more compact, but less future-proof, function importing
@@ -533,10 +557,66 @@ Linker/Command Line/Additional Options:
     Specify the number of section reordering iterations that the
     linker will try out in search for the ordering that gives the best
     compression ratio. The default is not to do any reordering.
+    Crinkler starts from a heuristic ordering (the one used when
+    initially estimating models) and incrementally makes small, random
+    changes to the ordering to see if it can find one that compresses
+    better.
+
     Specifying this option drastically increases the compression time,
     since Crinkler has to calculate the compressed size anew on every
     reordering. Usually, the size does not improve noticeably after a
     few thousand iterations.
+
+/REUSE:[reuse parameter file name]
+/REUSEMODE:STABLE
+/REUSEMODE:IMPROVE
+/REUSEMODE:WRITE
+/REUSEMODE:OFF
+
+    After compression, write information about the selected models,
+    the ordering of sections and the optimized hash table size to a
+    text file with the specified name. If the file exists already,
+    use the parameters in the file as input to the compression in a
+    manner dependent on the chosen REUSEMODE:
+
+    With STABLE (the default), skip all model estimation, section
+    reordering and hash table size optimization and simply use the
+    parameters exactly as in the file. Keep the reuse file as is.
+    This option can be used to try out small changes to the contents
+    of the code and data with a stable compression. Thus, it gives
+    a much more reliable estimation of whether the change was an
+    improvement or not. It is also useful as a way to compress very
+    quickly after the first time with a similar compression ratio.
+
+    With IMPROVE, only the section ordering from the file is reused,
+    and a normal compression procedure is performed. If section
+    reordering is enabled, it starts from the ordering in the reuse
+    file and tries to optimize the ordering based on that. The file is
+    written back only if the final file size is smaller than what
+    the parameters in the reuse file would have given (which is not
+    necessarily the size of the existing file, depending on what
+    changes and operations are performed in the meantime).
+    The option can be used to check whether better parameters can be
+    found than the ones cached in the reuse file. It is also a way to
+    run some extra reordering iterations (if reordering is enabled)
+    to see if this improves compression.
+
+    For both modes, it can be useful to edit the reuse file by hand
+    to try out parameters manually or to nudge Crinkler in some
+    direction.
+
+    With WRITE, the reuse file is not read, but is still written
+    after compression, overwriting the file if it exists. This can be
+    conveniently used when reuse is not desired, such that it can be
+    switched on at any time (by changing the reuse mode to STABLE or
+    IMPROVE) without needing another compression run.
+
+    With OFF, it is as if no reuse file is specified. This is simply
+    a way to disable the option without removing the file from the
+    commandline.
+
+    If COMPMODE is set to INSTANT, the reuse mode is also considered
+    to be OFF.
 
 /RANGE:[DLL name]
 
@@ -1048,9 +1128,10 @@ gives some advice on these.
 
 - When you perform detailed size comparisons, always use the SLOW
   compression mode with plenty of ORDERTRIES and compare the
-  "Reestimated ideal compressed total size" values. The INSTANT and
-  FAST modes are only intended for use during testing and to give a
-  rough estimate of the compressed size. Also note that the
+  "Ideal compressed total size" values. The INSTANT and FAST modes
+  are only intended for use during testing and to give a rough estimate
+  of the compressed size. Use the /REUSE option when making small
+  changes to achieve stable size comparison. Also note that the
   compression is tuned for the 4k size target, so any size comparisons
   you perform on smaller files might turn out to behave differently
   when you get nearer to 4k.
