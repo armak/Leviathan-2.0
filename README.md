@@ -45,11 +45,12 @@ Enables using the gl_Color vertex attribute to pass variables to the shader inst
 Fork your own and submit a pull request, ideas always welcome. Please don't add any additional dependencies unless it's a single-file-header library or something similar, and non-GPL licensed. Inclusion of CMake or other such tools is also not considered.
 
 ## TODO
-* Automatically dump audio in Editor mode if no .wav already exists.
+* Automatically render and dump audio in Editor mode if no .wav already exists.
 * Support for more softsynths?
 * Editor mode overlays (non-interactive seekbar, etc.).
-* More preprocessor macros for additional shader passes.
-* Maybe figure out something better to replace #define hell...
+* More functionality to add further render passes easily.
+* Structure the code better so not everything is inlined in the main loop.
+* Write out a version in assembly to use in the Release configuration.
 
 ## Acknowledgements
 * Rimina for initial motivation and OpenGL debug functions.
