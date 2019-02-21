@@ -31,7 +31,7 @@
 void entrypoint(void)
 #else
 #include "song.h"
-int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+int __cdecl main(int argc, char* argv[])
 #endif
 {
 	// initialize window
@@ -74,14 +74,23 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		#endif
 	#else
 		long double position = 0.0;
+		// absolute path always works here
+		// relative path works only when not ran from visual studio directly
 		song track(L"audio.wav");
 		track.play();
 		start = timeGetTime();
+
+		const int windowSize = 10;
+		int timeHistory[windowSize] = {};
 	#endif
 
 	// main loop
 	do
 	{
+		#ifdef EDITOR_CONTROLS
+			int frameStart = timeGetTime();
+		#endif
+
 		#if !(DESPERATE)
 			// do minimal message handling so windows doesn't kill your application
 			// not always strictly necessary but increases compatibility a lot
@@ -131,6 +140,21 @@ int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		// pausing and seeking enabled in debug mode
 		#ifdef EDITOR_CONTROLS
+			int frameTime = timeGetTime() - frameStart;
+
+			// calculate average fps over 'windowSize' of frames
+			float fps = 0.0f;
+			for (int i = 0; i < windowSize - 1; ++i)
+			{
+				timeHistory[i] = timeHistory[i + 1];
+				fps += 1.0f / static_cast<float>(timeHistory[i]);
+			}
+			timeHistory[windowSize - 1] = frameTime;
+			fps += 1.0f / static_cast<float>(frameTime);
+			fps *= 1000.0f / static_cast<float>(windowSize);
+
+			printf("Frame duration: %i ms (running fps average: %f)\r", frameTime, fps);
+
 			if(GetAsyncKeyState(VK_MENU))
 			{
 				double seek = 0.0;

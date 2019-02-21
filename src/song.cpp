@@ -21,9 +21,9 @@ song::song(LPCWSTR path) : playing(false) {
 	HRESULT hr = graph->RenderFile(path, 0);
 
 	if (hr == S_OK)
-		printf("Song succesfully rendered!\n");
+		printf("Audio file opened successfully\n");
 	else
-		printf("mp3 rendering failed :(\n");
+		printf("Failed to open audio file (NOTE: use absolute path when running from Visual Studio)\n");
 
 	graph->Release();
 
