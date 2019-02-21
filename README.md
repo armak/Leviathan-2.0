@@ -1,14 +1,12 @@
 # Leviathan 2.0
 The new generation of 4k intro frameworks. Currently very early in development but seems stable and usable enough give for testing.
 
-## Acknowledgements
-* Rimina for initial inspiration and OpenGL debug functions.
-* LJ for giving information about some nice hacks!
-* Fizzer for giving me help actually implementing those hacks.
-* iq for the original framework.
-* Mentor and Blueberry for Crinkler.
-* LLB for Shader Minifier. This fork is used in the framework: https://github.com/armak/Shader_Minifier.
-* Numerous people for various resources and information: auld, ps, cce, msqrt, ferris, yzi, las to name a few.
+## Features (Selling points)
+* Kept as simple as possible, made for productivity.
+* No external dependencies, instantly reado for development.
+* Readymade configurations for different use cases.
+* Simple unintrusive editor mode with seeking and hot reloading.
+* Easy to customize for your needs.
 
 ## Compatibility
 Current version intended to be used with Visual Studio 2017 (any version). Make sure you have a version with the latest Windows SDK installed (at least version 10.0.17134.0), or use version 8.1. With some extra configuration 2015 and 2013 should work as well.
@@ -43,9 +41,21 @@ Disabling this doesn't include or init 4klang at all.
 ### NO_UNIFORMS
 Enables using the gl_Color vertex attribute to pass variables to the shader instead of the usual uniform uploading. This saves one function import and around 10 bytes.
 
+## Contributing
+Fork your own and submit a pull request, ideas always welcome. Please don't add any additional dependencies unless it's a single-file-header library or something similar, and non-GPL licensed. Inclusion of CMake or other such tools is also not considered.
+
 ## TODO
 * Automatically dump audio in Editor mode if no .wav already exists.
 * Support for more softsynths?
 * Editor mode overlays (non-interactive seekbar, etc.).
 * More preprocessor macros for additional shader passes.
 * Maybe figure out something better to replace #define hell...
+
+## Acknowledgements
+* Rimina for initial motivation and OpenGL debug functions.
+* LJ for giving suggestions for some nice hacks.
+* Fizzer for help with implementing some of said hacks.
+* iq for the original 4k intro framework.
+* Mentor and Blueberry for Crinkler.
+* LLB for Shader Minifier. This fork is used in the framework: https://github.com/armak/Shader_Minifier.
+* Numerous people for various resources and information: auld, ps, cce, msqrt, ferris, yzi, las to name a few.
