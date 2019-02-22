@@ -17,7 +17,7 @@
 #pragma data_seg(".pixelfmt")
 static const PIXELFORMATDESCRIPTOR pfd = {
 #if BREAK_COMPATIBILITY
-	#if TWO_PASS
+	#if POST_PASS
 			0, 0, PFD_DRAW_TO_WINDOW|PFD_SUPPORT_OPENGL|PFD_DOUBLEBUFFER, PFD_TYPE_RGBA,
 			0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0
 	#else
