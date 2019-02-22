@@ -1,9 +1,9 @@
 # Leviathan 2.0
 The new generation of 4k intro frameworks. Currently very early in development but seems stable and usable enough give for testing.
 
-## Features (Selling points)
+## "Features"
 * Kept as simple as possible, made for productivity.
-* No external dependencies, instantly reado for development.
+* No external dependencies, instantly ready for development.
 * Readymade configurations for different use cases.
 * Simple unintrusive editor mode with seeking and hot reloading.
 * Easy to customize for your needs.
