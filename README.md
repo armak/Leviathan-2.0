@@ -32,7 +32,7 @@ Changes the display mode to fullscreen instead of a static window. You want to u
 Enabling this disables message handling, which isn't strictly necessary but makes running the intro much more reliable and compatible. Enabling this saves around 20 bytes.
 ### BREAK_COMPATIBILITY
 Enabling this uses a pixel format descriptor that uses parameters that are mostly zeroes. This improves the compressability at the cost of violating the API specifications. You might be able to run your intro currently, but might break in the future or on other peoples' configurations right now. Enabling this saves around 5 bytes.
-### TWO_PASS
+### POST_PASS
 Enables using the OpenGL backbuffer as a framebuffer and texture to perform simple post processing or other functionality.
 ### USE_MIPMAPS
 Generates mipmaps for the backbuffer texture.
