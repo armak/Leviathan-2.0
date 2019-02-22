@@ -369,6 +369,10 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Dropbox\Programming\Leviathan-2.0\src\editor.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Snapshot|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="src\4klang\4klang.h" />
     <ClInclude Include="src\debug.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -385,6 +389,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Dropbox\Programming\Leviathan-2.0\src\editor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Snapshot|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\song.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Editor|Win32'">false</ExcludedFromBuild>

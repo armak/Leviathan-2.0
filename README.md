@@ -49,7 +49,7 @@ Fork your own and submit a pull request, ideas always welcome. Please don't add 
 * Support for more softsynths?
 * Editor mode overlays (non-interactive seekbar, etc.).
 * More functionality to add further render passes easily.
-* Structure the code better so not everything is inlined in the main loop.
+* Continue Structuring the code better so not everything is inlined in the main loop.
 * Write out a version in assembly to use in the Release configuration.
 
 ## Acknowledgements

@@ -6,7 +6,13 @@
 
 #pragma comment(lib, "strmbase.lib")
 
-song::song(LPCWSTR path) : playing(false) {
+using namespace Leviathan;
+
+Song::Song()
+{
+}
+
+Song::Song(LPCWSTR path) : playing(false) {
 	__int64 trackLength;
 	IGraphBuilder * graph;
 
@@ -36,25 +42,25 @@ song::song(LPCWSTR path) : playing(false) {
 	pause();
 }
 
-song::~song() {
+Song::~Song() {
 	audioControl->Release();
 	mediaControl->Release();
 	mediaSeeking->Release();
 }
 
-int song::play() {
+int Song::play() {
 	mediaControl->Run();
 	playing = true;
 	return 0;
 }
 
-int song::pause() {
+int Song::pause() {
 	mediaControl->Stop();
 	playing = false;
 	return 0;
 }
 
-int song::toggle() {
+int Song::toggle() {
 	playing = !playing;
 	if (playing)
 		play();
@@ -63,7 +69,7 @@ int song::toggle() {
 	return 0;
 }
 
-bool song::is_playing() {
+bool Song::is_playing() {
 	OAFilterState state;
 	mediaControl->GetState(INFINITE, &state);
 	__int64 trackLength, position;
@@ -72,7 +78,7 @@ bool song::is_playing() {
 	return position<trackLength;
 }
 
-int song::seek(long double position) {
+int Song::seek(long double position) {
 
 	if (position>length)
 		position = length;
@@ -90,7 +96,7 @@ int song::seek(long double position) {
 	return 0;
 }
 
-long double song::getTime() {
+long double Song::getTime() {
 	__int64 position;
 	mediaSeeking->GetCurrentPosition(&position);
 	return (long double)(position) / (long double)10000000.0;

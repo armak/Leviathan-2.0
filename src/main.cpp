@@ -11,10 +11,10 @@
 	#define BREAK_COMPATIBILITY 0
 #endif
 
-#define TWO_PASS    1
-#define USE_MIPMAPS 1
-#define USE_AUDIO   1
-#define NO_UNIFORMS 0
+#define POST_PASS    1
+#define USE_MIPMAPS  1
+#define USE_AUDIO    1
+#define NO_UNIFORMS  0
 
 #include "definitions.h"
 #if OPENGL_DEBUG
@@ -23,14 +23,14 @@
 
 #include "glext.h"
 #include "shaders/fragment.inl"
-#if TWO_PASS
+#if POST_PASS
 	#include "shaders/post.inl"
 #endif
 
 #ifndef EDITOR_CONTROLS
 void entrypoint(void)
 #else
-#include "song.h"
+#include "editor.h"
 int __cdecl main(int argc, char* argv[])
 #endif
 {
@@ -53,13 +53,13 @@ int __cdecl main(int argc, char* argv[])
 	wglMakeCurrent(hDC, wglCreateContext(hDC));
 	
 	PID_QUALIFIER int pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
-	#if TWO_PASS
+	#if POST_PASS
 		PID_QUALIFIER int pi2 = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
 	#endif
 
 	#if OPENGL_DEBUG
 		shaderDebug(fragment, FAIL_KILL);
-		#if TWO_PASS
+		#if POST_PASS
 			shaderDebug(post, FAIL_KILL);
 		#endif
 	#endif
@@ -73,22 +73,20 @@ int __cdecl main(int argc, char* argv[])
 			waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
 		#endif
 	#else
-		long double position = 0.0;
+		Leviathan::Editor editor = Leviathan::Editor();
+
 		// absolute path always works here
 		// relative path works only when not ran from visual studio directly
-		song track(L"audio.wav");
+		Leviathan::Song track(L"audio.wav");
 		track.play();
-		start = timeGetTime();
-
-		const int windowSize = 10;
-		int timeHistory[windowSize] = {};
+		double position = 0.0;
 	#endif
 
 	// main loop
 	do
 	{
 		#ifdef EDITOR_CONTROLS
-			int frameStart = timeGetTime();
+			editor.beginFrame(timeGetTime());
 		#endif
 
 		#if !(DESPERATE)
@@ -120,7 +118,7 @@ int __cdecl main(int argc, char* argv[])
 		glRects(-1, -1, 1, 1);
 
 		// render "post process" using the opengl backbuffer
-		#if TWO_PASS
+		#if POST_PASS
 			glBindTexture(GL_TEXTURE_2D, 1);
 			#if USE_MIPMAPS
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -138,39 +136,13 @@ int __cdecl main(int argc, char* argv[])
 
 		SwapBuffers(hDC);
 
-		// pausing and seeking enabled in debug mode
+		// handle functionality of the editor
 		#ifdef EDITOR_CONTROLS
-			int frameTime = timeGetTime() - frameStart;
-
-			// calculate average fps over 'windowSize' of frames
-			float fps = 0.0f;
-			for (int i = 0; i < windowSize - 1; ++i)
-			{
-				timeHistory[i] = timeHistory[i + 1];
-				fps += 1.0f / static_cast<float>(timeHistory[i]);
-			}
-			timeHistory[windowSize - 1] = frameTime;
-			fps += 1.0f / static_cast<float>(frameTime);
-			fps *= 1000.0f / static_cast<float>(windowSize);
-
-			printf("Frame duration: %i ms (running fps average: %f)\r", frameTime, fps);
-
-			if(GetAsyncKeyState(VK_MENU))
-			{
-				double seek = 0.0;
-				if(GetAsyncKeyState(VK_DOWN)) track.pause();
-				if(GetAsyncKeyState(VK_UP))   track.play();
-				if(GetAsyncKeyState(VK_RIGHT) && !GetAsyncKeyState(VK_SHIFT)) seek += 1.0;
-				if(GetAsyncKeyState(VK_LEFT)  && !GetAsyncKeyState(VK_SHIFT)) seek -= 1.0;
-				if(GetAsyncKeyState(VK_RIGHT) && GetAsyncKeyState(VK_SHIFT))  seek += 0.1;
-				if(GetAsyncKeyState(VK_LEFT)  && GetAsyncKeyState(VK_SHIFT))  seek -= 0.1;
-				if(position+seek != position)
-				{
-					position += seek;
-					track.seek(position);
-				}
-			}
+			editor.endFrame(timeGetTime());
+			editor.printFrameStatistics();
+			position = editor.handleEvents(&track, position);
 		#endif
+
 	} while(!GetAsyncKeyState(VK_ESCAPE)
 		#if USE_AUDIO
 			&& MMTime.u.sample < MAX_SAMPLES

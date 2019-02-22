@@ -4,20 +4,33 @@
 #include <dshow.h>
 #pragma warning(default:995)
 
-class song {
-private:
-	long double length;
-	bool playing;
-	IMediaControl * mediaControl;
-	IMediaSeeking * mediaSeeking;
-	IBasicAudio * audioControl;
-public:
-	song(LPCWSTR path);
-	~song();
-	int play();
-	int pause();
-	int toggle();
-	bool is_playing();
-	int seek(long double position);
-	long double getTime();
-};
+namespace Leviathan
+{
+	class Song {
+	public:
+		Song();
+
+		Song(LPCWSTR path);
+
+		~Song();
+
+		int play();
+
+		int pause();
+
+		int toggle();
+
+		bool is_playing();
+
+		int seek(long double position);
+
+		long double getTime();
+
+	private:
+		long double length;
+		bool playing;
+		IMediaControl * mediaControl;
+		IMediaSeeking * mediaSeeking;
+		IBasicAudio * audioControl;
+	};
+}
