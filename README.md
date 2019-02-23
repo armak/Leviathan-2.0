@@ -5,6 +5,7 @@ The new generation of 4k intro frameworks. Currently very early in development b
 * Kept as simple as possible, made for productivity.
 * No external dependencies, instantly ready for development.
 * Readymade configurations for different use cases.
+* Automated shader minification upon compilation.
 * Simple unintrusive editor mode with seeking and hot reloading.
 * Easy to customize for your needs.
 
@@ -13,12 +14,14 @@ Current version intended to be used with Visual Studio 2017 (any version). Make 
 
 ## Configurations
 This section describes the different build configurations available from Visual Studio IDE
+### Heavy Release
+Uses heavier Crinkler settings to squeeze out maximum compression (note though that the /VERYSLOW flag could sometimes backfire and produce a larger executable). Also doesn't do shader minification since it assumes the user is performing hand minifications to the .inl source, which would be overwritten by the Shader Minifier.
 ### Release
-The real deal. No-nonsense max crinklering with minimum extra. Use this for occasional testing and your final releases (the compression WILL take a while).
+Generally recommended for producing a final executable to be released. Uses moderate Crinkler settings.
 ### Snapshot
 Use for general development. Only minimal crinklering but nothing extra included. Useful still for keeping track of relative size changes. This configuration overwrites Release configuration binaries, but doesn't generate and overwrite crinkler report.
 ### Debug
-By default includes some debug options, especially for OpenGL. Check out debug.h for more.
+Deprecated, might work but currently not really useful and not updated. Editor covers everything in this configuration.
 ### Editor
 Creates a bigger exe similar to Debug, but with keyboard controls for pausing and seeking around temporally. Reguires a pre-rendered copy of the audio track used (well, not a must but...). Overwrites Debug configuration binaries.
 
