@@ -29,7 +29,7 @@ Song::Song(LPCWSTR path) : playing(false) {
 	if (hr == S_OK)
 		printf("Audio file opened successfully\n");
 	else
-		printf("Failed to open audio file (NOTE: use absolute path when running from Visual Studio)\n");
+		printf("Failed to open audio file\n");
 
 	graph->Release();
 

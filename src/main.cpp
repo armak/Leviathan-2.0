@@ -31,6 +31,7 @@
 void entrypoint(void)
 #else
 #include "editor.h"
+#include "song.h"
 int __cdecl main(int argc, char* argv[])
 #endif
 {
@@ -52,16 +53,9 @@ int __cdecl main(int argc, char* argv[])
 	SetPixelFormat(hDC, ChoosePixelFormat(hDC, &pfd), &pfd);
 	wglMakeCurrent(hDC, wglCreateContext(hDC));
 	
-	PID_QUALIFIER int pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
+	PID_QUALIFIER int pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
 	#if POST_PASS
-		PID_QUALIFIER int pi2 = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
-	#endif
-
-	#if OPENGL_DEBUG
-		shaderDebug(fragment, FAIL_KILL);
-		#if POST_PASS
-			shaderDebug(post, FAIL_KILL);
-		#endif
+		PID_QUALIFIER int pidPost = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
 	#endif
 
 	// initialize sound
@@ -73,7 +67,8 @@ int __cdecl main(int argc, char* argv[])
 			waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
 		#endif
 	#else
-		Leviathan::Editor editor = Leviathan::Editor();
+		Leviathan::Editor editor = Leviathan::Editor(timeGetTime());
+		editor.updateShaders(&pidMain, &pidPost, true);
 
 		// absolute path always works here
 		// relative path works only when not ran from visual studio directly
@@ -97,7 +92,7 @@ int __cdecl main(int argc, char* argv[])
 		#endif
 
 		// render with the primary shader
-		((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(pid);
+		((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(pidMain);
 		#ifndef EDITOR_CONTROLS
 			// if you don't have an audio system figure some other way to pass time to your shader
 			#if USE_AUDIO
@@ -111,7 +106,6 @@ int __cdecl main(int argc, char* argv[])
 				#endif
 			#endif
 		#else
-			refreshShaders(pid, pi2);
 			position = track.getTime();
 			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, ((int)(position*44100.0)));
 		#endif
@@ -129,7 +123,7 @@ int __cdecl main(int argc, char* argv[])
 				glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, XRES, YRES, 0);
 			#endif
 			((PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture"))(GL_TEXTURE0);
-			((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(pi2);
+			((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(pidPost);
 			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, 0);
 			glRects(-1, -1, 1, 1);
 		#endif
@@ -141,6 +135,7 @@ int __cdecl main(int argc, char* argv[])
 			editor.endFrame(timeGetTime());
 			editor.printFrameStatistics();
 			position = editor.handleEvents(&track, position);
+			editor.updateShaders(&pidMain, &pidPost);
 		#endif
 
 	} while(!GetAsyncKeyState(VK_ESCAPE)

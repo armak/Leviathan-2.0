@@ -1,6 +1,10 @@
 #include "editor.h"
+#include "song.h"
+
 #include "stdio.h"
 #include "windows.h"
+#include "GL/gl.h"
+#include "glext.h"
 
 using namespace Leviathan;
 
@@ -40,9 +44,9 @@ double Editor::handleEvents(Leviathan::Song* track, double position)
 		if (GetAsyncKeyState(VK_DOWN)) track->pause();
 		if (GetAsyncKeyState(VK_UP))   track->play();
 		if (GetAsyncKeyState(VK_RIGHT) && !GetAsyncKeyState(VK_SHIFT)) seek += 1.0;
-		if (GetAsyncKeyState(VK_LEFT) && !GetAsyncKeyState(VK_SHIFT)) seek -= 1.0;
+		if (GetAsyncKeyState(VK_LEFT)  && !GetAsyncKeyState(VK_SHIFT)) seek -= 1.0;
 		if (GetAsyncKeyState(VK_RIGHT) && GetAsyncKeyState(VK_SHIFT))  seek += 0.1;
-		if (GetAsyncKeyState(VK_LEFT) && GetAsyncKeyState(VK_SHIFT))  seek -= 0.1;
+		if (GetAsyncKeyState(VK_LEFT)  && GetAsyncKeyState(VK_SHIFT))  seek -= 0.1;
 		if (position + seek != position)
 		{
 			position += seek;
@@ -50,5 +54,93 @@ double Editor::handleEvents(Leviathan::Song* track, double position)
 		}
 	}
 
+	if (GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState('S'))
+		shaderUpdatePending = true;
+
 	return position;
+}
+
+void Editor::updateShaders(int* mainShaderPID, int* postShaderPID, bool force_update)
+{
+	if (shaderUpdatePending || force_update)
+	{
+		// make sure the file has finished writing to disk
+		if (timeGetTime() - previousUpdateTime > 200) {
+			Sleep(100);
+			int newPID = reloadShaderSource("../src/shaders/fragment.frag");
+			if (newPID > 0)
+				*mainShaderPID = newPID;
+
+			newPID = reloadShaderSource("../src/shaders/post.frag");
+			if (newPID > 0)
+				*postShaderPID = newPID;
+		}
+
+		previousUpdateTime = timeGetTime() - startTime;
+		shaderUpdatePending = false;
+	}
+}
+
+int Editor::reloadShaderSource(const char* filename)
+{
+	long inputSize = 0;
+	// we're of course opening a text file, but should be opened in binary ('b')
+	// longer shaders are known to cause problems by producing garbage input when read
+	FILE* file = fopen(filename, "rb");
+
+	if (file)
+	{
+		fseek(file, 0, SEEK_END);
+		inputSize = ftell(file);
+		rewind(file);
+
+		char* shaderString = static_cast<char*>(calloc(inputSize + 1, sizeof(char)));
+		fread(shaderString, sizeof(char), inputSize, file);
+		fclose(file);
+
+		// just to be sure...
+		shaderString[inputSize] = '\0';
+
+		compileAndDebugShader(shaderString, false);
+		int pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &shaderString);
+		free(shaderString);
+		return pid;
+	}
+	else
+	{
+		printf("Input shader file at \"%s\" not found, shader not reloaded\n", filename);
+		return -1;
+	}
+}
+
+bool Editor::compileAndDebugShader(const char* shader, bool kill_on_failure)
+{
+	// try and compile the shader 
+	int result = 0;
+	const int debugid = ((PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader"))(GL_FRAGMENT_SHADER);
+	((PFNGLSHADERSOURCEPROC)wglGetProcAddress("glShaderSource"))(debugid, 1, &shader, 0);
+	((PFNGLCOMPILESHADERPROC)wglGetProcAddress("glCompileShader"))(debugid);
+
+	// get compile result
+	((PFNGLGETSHADERIVPROC)wglGetProcAddress("glGetShaderiv"))(debugid, GL_COMPILE_STATUS, &result);
+	if (result == GL_FALSE)
+	{
+		// display compile log on failure
+		static char errorBuffer[shaderErrorBufferLength];
+		((PFNGLGETSHADERINFOLOGPROC)wglGetProcAddress("glGetShaderInfoLog"))(debugid, shaderErrorBufferLength-1, NULL, static_cast<char*>(errorBuffer));
+		MessageBox(NULL, errorBuffer, "", 0x00000000L);
+		if (kill_on_failure)
+		{
+			ExitProcess(0);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		((PFNGLDELETESHADERPROC)wglGetProcAddress("glDeleteShader"))(debugid);
+		return true;
+	}
 }

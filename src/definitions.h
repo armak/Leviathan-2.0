@@ -14,6 +14,8 @@
 #define XRES 1280
 #define YRES 720
 
+extern "C" int _fltused = 0;
+
 #pragma data_seg(".pixelfmt")
 static const PIXELFORMATDESCRIPTOR pfd = {
 #if BREAK_COMPATIBILITY
@@ -80,8 +82,6 @@ static DEVMODE screenSettings = {
 		TIME_SAMPLES, 0
 	};
 #endif
-
-//extern "C" int _fltused = 0;
 
 #ifdef EDITOR_CONTROLS
 	#define FAIL_KILL false
