@@ -10,9 +10,14 @@ namespace Leviathan
 	class Editor
 	{
 	public:
-		Editor(int applicationStartTime)
+		Editor()
 		{
-			startTime = applicationStartTime;
+			lastFrameStart = 0;
+			lastFrameStop = 0;
+			trackPosition = 0.0;
+			trackEnd = 0.0;
+
+			state = Playing;
 		}
 
 		void beginFrame(const unsigned long time);
@@ -28,10 +33,10 @@ namespace Leviathan
 	private:
 		int reloadShaderSource(const char* filename);
 
-		bool compileAndDebugShader(const char* shader, bool kill_on_failure = true);
+		bool compileAndDebugShader(const char* shader, const char* filename, bool kill_on_failure = true);
 
-		int startTime;
-		int previousUpdateTime;
+		enum PlayState {Playing, Paused};
+		PlayState state;
 
 		unsigned long lastFrameStart;
 		unsigned long lastFrameStop;
@@ -41,5 +46,9 @@ namespace Leviathan
 		int timeHistory[windowSize] = {};
 
 		bool shaderUpdatePending = false;
+		int previousUpdateTime;
+
+		double trackPosition;
+		double trackEnd;
 	};
 }

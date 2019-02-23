@@ -12,7 +12,8 @@ Song::Song()
 {
 }
 
-Song::Song(LPCWSTR path) : playing(false) {
+Song::Song(LPCWSTR path) : playing(false)
+{
 	__int64 trackLength;
 	IGraphBuilder * graph;
 
@@ -42,25 +43,29 @@ Song::Song(LPCWSTR path) : playing(false) {
 	pause();
 }
 
-Song::~Song() {
+Song::~Song()
+{
 	audioControl->Release();
 	mediaControl->Release();
 	mediaSeeking->Release();
 }
 
-int Song::play() {
+int Song::play()
+{
 	mediaControl->Run();
 	playing = true;
 	return 0;
 }
 
-int Song::pause() {
+int Song::pause()
+{
 	mediaControl->Stop();
 	playing = false;
 	return 0;
 }
 
-int Song::toggle() {
+int Song::toggle()
+{
 	playing = !playing;
 	if (playing)
 		play();
@@ -69,7 +74,8 @@ int Song::toggle() {
 	return 0;
 }
 
-bool Song::is_playing() {
+bool Song::is_playing()
+{
 	OAFilterState state;
 	mediaControl->GetState(INFINITE, &state);
 	__int64 trackLength, position;
@@ -78,8 +84,8 @@ bool Song::is_playing() {
 	return position<trackLength;
 }
 
-int Song::seek(long double position) {
-
+int Song::seek(long double position)
+{
 	if (position>length)
 		position = length;
 	if (position<.0)
@@ -96,8 +102,14 @@ int Song::seek(long double position) {
 	return 0;
 }
 
-long double Song::getTime() {
+long double Song::getTime()
+{
 	__int64 position;
 	mediaSeeking->GetCurrentPosition(&position);
 	return (long double)(position) / (long double)10000000.0;
+}
+
+long double Song::getLength()
+{
+	return length;
 }

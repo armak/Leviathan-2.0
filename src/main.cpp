@@ -67,7 +67,7 @@ int __cdecl main(int argc, char* argv[])
 			waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
 		#endif
 	#else
-		Leviathan::Editor editor = Leviathan::Editor(timeGetTime());
+		Leviathan::Editor editor = Leviathan::Editor();
 		editor.updateShaders(&pidMain, &pidPost, true);
 
 		// absolute path always works here
@@ -75,6 +75,8 @@ int __cdecl main(int argc, char* argv[])
 		Leviathan::Song track(L"audio.wav");
 		track.play();
 		double position = 0.0;
+
+		printf("Starting playback...\n");
 	#endif
 
 	// main loop
@@ -133,8 +135,8 @@ int __cdecl main(int argc, char* argv[])
 		// handle functionality of the editor
 		#ifdef EDITOR_CONTROLS
 			editor.endFrame(timeGetTime());
-			editor.printFrameStatistics();
 			position = editor.handleEvents(&track, position);
+			editor.printFrameStatistics();
 			editor.updateShaders(&pidMain, &pidPost);
 		#endif
 

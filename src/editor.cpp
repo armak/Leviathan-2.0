@@ -8,6 +8,8 @@
 
 using namespace Leviathan;
 
+#define USE_MESSAGEBOX 0
+
 void Editor::beginFrame(const unsigned long time)
 {
 	lastFrameStart = time;
@@ -33,7 +35,11 @@ void Editor::printFrameStatistics()
 	fps += 1.0f / static_cast<float>(frameTime);
 	fps *= 1000.0f / static_cast<float>(windowSize);
 
-	printf("Frame duration: %i ms (running fps average: %f)\r", frameTime, fps);
+	printf("%s: %0.2i:%0.2i (%i%%), frame duration: %i ms (running fps average: %2.2f) \r",
+		state == Playing ? "Playing" : " Paused",
+		// assuming y'all won't be making intros more than an hour long
+		int(trackPosition/60.0), int(trackPosition) % 60, int(100.0f*trackPosition/trackEnd),
+		frameTime, fps);
 }
 
 double Editor::handleEvents(Leviathan::Song* track, double position)
@@ -41,8 +47,16 @@ double Editor::handleEvents(Leviathan::Song* track, double position)
 	if (GetAsyncKeyState(VK_MENU))
 	{
 		double seek = 0.0;
-		if (GetAsyncKeyState(VK_DOWN)) track->pause();
-		if (GetAsyncKeyState(VK_UP))   track->play();
+		if (GetAsyncKeyState(VK_DOWN))
+		{
+			state = Paused;
+			track->pause();
+		}
+		if (GetAsyncKeyState(VK_UP))
+		{
+			state = Playing;
+			track->play();
+		}
 		if (GetAsyncKeyState(VK_RIGHT) && !GetAsyncKeyState(VK_SHIFT)) seek += 1.0;
 		if (GetAsyncKeyState(VK_LEFT)  && !GetAsyncKeyState(VK_SHIFT)) seek -= 1.0;
 		if (GetAsyncKeyState(VK_RIGHT) && GetAsyncKeyState(VK_SHIFT))  seek += 0.1;
@@ -57,6 +71,9 @@ double Editor::handleEvents(Leviathan::Song* track, double position)
 	if (GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState('S'))
 		shaderUpdatePending = true;
 
+	trackPosition = position;
+	trackEnd = track->getLength();
+
 	return position;
 }
 
@@ -65,7 +82,11 @@ void Editor::updateShaders(int* mainShaderPID, int* postShaderPID, bool force_up
 	if (shaderUpdatePending || force_update)
 	{
 		// make sure the file has finished writing to disk
-		if (timeGetTime() - previousUpdateTime > 200) {
+		if (timeGetTime() - previousUpdateTime > 200)
+		{
+			// only way i can think of to clear the line without "status line" residue
+			printf("Refreshing shaders...                                                   \n");
+
 			Sleep(100);
 			int newPID = reloadShaderSource("../src/shaders/fragment.frag");
 			if (newPID > 0)
@@ -76,7 +97,7 @@ void Editor::updateShaders(int* mainShaderPID, int* postShaderPID, bool force_up
 				*postShaderPID = newPID;
 		}
 
-		previousUpdateTime = timeGetTime() - startTime;
+		previousUpdateTime = timeGetTime();
 		shaderUpdatePending = false;
 	}
 }
@@ -101,9 +122,13 @@ int Editor::reloadShaderSource(const char* filename)
 		// just to be sure...
 		shaderString[inputSize] = '\0';
 
-		compileAndDebugShader(shaderString, false);
+		if (!compileAndDebugShader(shaderString, filename, false))
+			return -1;
+
 		int pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &shaderString);
 		free(shaderString);
+
+		printf("Loaded shader from \"%s\"\n", filename);
 		return pid;
 	}
 	else
@@ -113,7 +138,7 @@ int Editor::reloadShaderSource(const char* filename)
 	}
 }
 
-bool Editor::compileAndDebugShader(const char* shader, bool kill_on_failure)
+bool Editor::compileAndDebugShader(const char* shader, const char* filename, bool kill_on_failure)
 {
 	// try and compile the shader 
 	int result = 0;
@@ -128,7 +153,12 @@ bool Editor::compileAndDebugShader(const char* shader, bool kill_on_failure)
 		// display compile log on failure
 		static char errorBuffer[shaderErrorBufferLength];
 		((PFNGLGETSHADERINFOLOGPROC)wglGetProcAddress("glGetShaderInfoLog"))(debugid, shaderErrorBufferLength-1, NULL, static_cast<char*>(errorBuffer));
-		MessageBox(NULL, errorBuffer, "", 0x00000000L);
+		
+		#if USE_MESSAGEBOX
+			MessageBox(NULL, errorBuffer, "", 0x00000000L);
+		#endif
+		printf("Compilation errors in %s:\n\n %s\n", filename, errorBuffer);
+
 		if (kill_on_failure)
 		{
 			ExitProcess(0);

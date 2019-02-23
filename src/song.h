@@ -6,7 +6,8 @@
 
 namespace Leviathan
 {
-	class Song {
+	class Song
+	{
 	public:
 		Song();
 
@@ -25,6 +26,8 @@ namespace Leviathan
 		int seek(long double position);
 
 		long double getTime();
+
+		long double getLength();
 
 	private:
 		long double length;
