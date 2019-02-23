@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Leviathan 2.0", "leviathan.vcxproj", "{59C1D4F3-AE93-4A0A-B4FE-60841CA865E5}"
 EndProject
@@ -9,6 +9,7 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Editor|Win32 = Editor|Win32
+		Heavy Release|Win32 = Heavy Release|Win32
 		Release|Win32 = Release|Win32
 		Snapshot|Win32 = Snapshot|Win32
 	EndGlobalSection
@@ -17,6 +18,8 @@ Global
 		{59C1D4F3-AE93-4A0A-B4FE-60841CA865E5}.Debug|Win32.Build.0 = Debug|Win32
 		{59C1D4F3-AE93-4A0A-B4FE-60841CA865E5}.Editor|Win32.ActiveCfg = Editor|Win32
 		{59C1D4F3-AE93-4A0A-B4FE-60841CA865E5}.Editor|Win32.Build.0 = Editor|Win32
+		{59C1D4F3-AE93-4A0A-B4FE-60841CA865E5}.Heavy Release|Win32.ActiveCfg = Heavy Release|Win32
+		{59C1D4F3-AE93-4A0A-B4FE-60841CA865E5}.Heavy Release|Win32.Build.0 = Heavy Release|Win32
 		{59C1D4F3-AE93-4A0A-B4FE-60841CA865E5}.Release|Win32.ActiveCfg = Release|Win32
 		{59C1D4F3-AE93-4A0A-B4FE-60841CA865E5}.Release|Win32.Build.0 = Release|Win32
 		{59C1D4F3-AE93-4A0A-B4FE-60841CA865E5}.Snapshot|Win32.ActiveCfg = Snapshot|Win32
@@ -24,5 +27,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BFFCE7AC-AF44-47A1-9B82-AB82AB604DD0}
 	EndGlobalSection
 EndGlobal

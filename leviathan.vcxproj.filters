@@ -3,7 +3,7 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\song.cpp" />
-    <ClCompile Include="..\..\Dropbox\Programming\Leviathan-2.0\src\editor.cpp" />
+    <ClCompile Include="src\editor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\4klang\4klang.h" />
@@ -16,7 +16,7 @@
       <Filter>ext</Filter>
     </ClInclude>
     <ClInclude Include="src\song.h" />
-    <ClInclude Include="..\..\Dropbox\Programming\Leviathan-2.0\src\editor.h" />
+    <ClInclude Include="src\editor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\post.inl">
