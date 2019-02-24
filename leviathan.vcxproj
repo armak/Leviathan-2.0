@@ -226,11 +226,13 @@ shader_minifier.exe -v -o src\shaders\post.inl src\shaders\post.frag</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>
+      </ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CallingConvention>StdCall</CallingConvention>
       <OmitDefaultLibName>false</OmitDefaultLibName>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -251,9 +253,11 @@ shader_minifier.exe -v -o src\shaders\post.inl src\shaders\post.frag</Command>
       </EntryPointSymbol>
       <AssemblyDebug>true</AssemblyDebug>
       <ProfileGuidedDatabase>bin\debug\$(TargetName).pgd</ProfileGuidedDatabase>
-      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
       <ManifestFile />
-      <ImageHasSafeExceptionHandlers />
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
