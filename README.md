@@ -1,5 +1,5 @@
 # Leviathan 2.0
-The new generation of 4k intro frameworks. Currently very early in development but seems stable and usable enough give for testing.
+Leviathan is a simple "framework" for developing small (around 1-8 kilobyte) [Demoscene](https://en.wikipedia.org/wiki/Demoscene) productions. It is primarily developed for creating the [Prismbeings](https://www.pouet.net/groups.php?which=12646) 4k Intros. "Intro" is parlance for a size-wise small Demo.
 
 ## "Features"
 * Kept as simple as possible, made for productivity.
@@ -10,7 +10,7 @@ The new generation of 4k intro frameworks. Currently very early in development b
 * Easy to customize for your needs.
 
 ## Compatibility
-Current version intended to be used with Visual Studio 2017 (any version). Make sure you have a version with the latest Windows SDK installed (at least version 10.0.17134.0), or use version 8.1. With some extra configuration 2015 and 2013 should work as well.
+Current version intended to be used with Visual Studio 2017 (any version). Make sure you have a version with the latest Windows SDK installed (at least version 10.0.17134.0), or use version 8.1. With some extra configuration 2015 and 2013 should work as well. Leviathan is is very Windows-specific and isn't really sensibly portable anywhere else.
 
 ## Configurations
 This section describes the different build configurations available from Visual Studio IDE
@@ -23,7 +23,7 @@ Use for general development. Only minimal crinklering but nothing extra included
 ### Debug
 Deprecated, might work but currently not really useful and not updated. Editor covers everything in this configuration.
 ### Editor
-Creates a bigger exe similar to Debug, but with keyboard controls for pausing and seeking around temporally. Reguires a pre-rendered copy of the audio track used (well, not a must but...). Overwrites Debug configuration binaries.
+Creates a bigger exe similar to Debug, but with keyboard controls for pausing and seeking around temporally. Requires a pre-rendered copy of the audio track used (well, not a must but...). Overwrites Debug configuration binaries.
 
 ## Build Flags
 This section describes the preprocessor definitions available for various features and size optimizations.
