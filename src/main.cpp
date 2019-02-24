@@ -27,6 +27,14 @@
 	#include "shaders/post.inl"
 #endif
 
+// static allocation saves a few bytes
+static int pidMain;
+static int pidPost;
+// static HDC hDC;
+#if !(DESPERATE)
+	static MSG msg;
+#endif
+
 #ifndef EDITOR_CONTROLS
 void entrypoint(void)
 #else
@@ -47,15 +55,16 @@ int __cdecl main(int argc, char* argv[])
 		#else
 			HDC hDC = GetDC(CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0));
 		#endif
-	#endif	
+	#endif
 
-	// initalize opengl
+	// initalize opengl context
 	SetPixelFormat(hDC, ChoosePixelFormat(hDC, &pfd), &pfd);
 	wglMakeCurrent(hDC, wglCreateContext(hDC));
 	
-	PID_QUALIFIER int pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
+	// create and compile shader programs
+	pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
 	#if POST_PASS
-		PID_QUALIFIER int pidPost = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
+		pidPost = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
 	#endif
 
 	// initialize sound
@@ -88,8 +97,7 @@ int __cdecl main(int argc, char* argv[])
 
 		#if !(DESPERATE)
 			// do minimal message handling so windows doesn't kill your application
-			// not always strictly necessary but increases compatibility a lot
-			MSG msg;
+			// not always strictly necessary but increases compatibility and reliability a lot
 			PeekMessage(&msg, 0, 0, 0, PM_REMOVE);
 		#endif
 

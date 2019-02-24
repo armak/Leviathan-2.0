@@ -14,7 +14,8 @@
 #define XRES 1280
 #define YRES 720
 
-extern "C" int _fltused = 0;
+// declare this symbol if your code uses floating point types
+// extern "C" int _fltused;
 
 #pragma data_seg(".pixelfmt")
 static const PIXELFORMATDESCRIPTOR pfd = {
