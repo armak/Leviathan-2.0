@@ -1,6 +1,6 @@
-
 namespace Leviathan
 {
+	// forward declaration
 	class Song;
 }
 
@@ -10,15 +10,7 @@ namespace Leviathan
 	class Editor
 	{
 	public:
-		Editor()
-		{
-			lastFrameStart = 0;
-			lastFrameStop = 0;
-			trackPosition = 0.0;
-			trackEnd = 0.0;
-
-			state = Playing;
-		}
+		Editor();
 
 		void beginFrame(const unsigned long time);
 

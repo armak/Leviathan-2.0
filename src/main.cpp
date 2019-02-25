@@ -87,8 +87,6 @@ int __cdecl main(int argc, char* argv[])
 		Leviathan::Song track(L"audio.wav");
 		track.play();
 		double position = 0.0;
-
-		printf("Starting playback...\n");
 	#endif
 
 	// main loop

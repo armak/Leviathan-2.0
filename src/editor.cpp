@@ -10,6 +10,11 @@ using namespace Leviathan;
 
 #define USE_MESSAGEBOX 0
 
+Editor::Editor() : lastFrameStart(0), lastFrameStop(0), trackPosition(0.0), trackEnd(0.0), state(Playing)
+{
+	printf("Editor opened...\n");
+}
+
 void Editor::beginFrame(const unsigned long time)
 {
 	lastFrameStart = time;

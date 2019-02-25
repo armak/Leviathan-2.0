@@ -84,6 +84,7 @@ static DEVMODE screenSettings = {
 	};
 #endif
 
+// currently unused definitions
 #ifdef EDITOR_CONTROLS
 	#define FAIL_KILL false
 	#define PID_QUALIFIER
