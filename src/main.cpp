@@ -31,9 +31,6 @@
 static int pidMain;
 static int pidPost;
 // static HDC hDC;
-#if !(DESPERATE)
-	static MSG msg;
-#endif
 
 #ifndef EDITOR_CONTROLS
 void entrypoint(void)
@@ -99,7 +96,9 @@ int __cdecl main(int argc, char* argv[])
 		#if !(DESPERATE)
 			// do minimal message handling so windows doesn't kill your application
 			// not always strictly necessary but increases compatibility and reliability a lot
-			PeekMessage(&msg, 0, 0, 0, PM_REMOVE);
+			// normally you'd pass an msg struct as the first argument but it's just an
+			// output parameter and the implementation presumably does a NULL check
+			PeekMessage(0, 0, 0, 0, PM_REMOVE);
 		#endif
 
 		// render with the primary shader
