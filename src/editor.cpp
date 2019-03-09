@@ -128,8 +128,12 @@ int Editor::reloadShaderSource(const char* filename)
 		shaderString[inputSize] = '\0';
 
 		if (!compileAndDebugShader(shaderString, filename, false))
+		{
+			free(shaderString);
+			// return an invalid PID value if compilation fails
 			return -1;
-
+		}
+		
 		int pid = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &shaderString);
 		free(shaderString);
 

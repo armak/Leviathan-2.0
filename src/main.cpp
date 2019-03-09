@@ -117,7 +117,7 @@ int __cdecl main(int argc, char* argv[])
 			#endif
 		#else
 			position = track.getTime();
-			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, ((int)(position*44100.0)));
+			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, (static_cast<int>(position*44100.0)));
 		#endif
 		glRects(-1, -1, 1, 1);
 
