@@ -27,12 +27,14 @@
 	#include "shaders/post.inl"
 #endif
 
+#pragma data_seg(".pids")
 // static allocation saves a few bytes
 static int pidMain;
 static int pidPost;
 // static HDC hDC;
 
 #ifndef EDITOR_CONTROLS
+#pragma data_seg(".main")
 void entrypoint(void)
 #else
 #include "editor.h"
