@@ -34,7 +34,7 @@ static int pidPost;
 // static HDC hDC;
 
 #ifndef EDITOR_CONTROLS
-#pragma data_seg(".main")
+#pragma code_seg(".main")
 void entrypoint(void)
 #else
 #include "editor.h"
