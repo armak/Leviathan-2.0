@@ -68,5 +68,5 @@ Fork your own and submit a pull request, ideas always welcome. Please don't add 
 * Fizzer for help with implementing some of said hacks.
 * iq for the original 4k intro framework.
 * Mentor and Blueberry for Crinkler.
-* LLB for Shader Minifier. This fork is used in the framework: https://github.com/armak/Shader_Minifier.
+* LLB for Shader Minifier.
 * Numerous people for various resources and information: auld, ps, cce, msqrt, ferris, yzi, las to name a few.

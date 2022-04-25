@@ -22,8 +22,10 @@
 #endif
 
 #include "glext.h"
+#pragma data_seg(".shader")
 #include "shaders/fragment.inl"
 #if POST_PASS
+	#pragma data_seg(".shader")
 	#include "shaders/post.inl"
 #endif
 
@@ -64,9 +66,9 @@ int __cdecl main(int argc, char* argv[])
 	wglMakeCurrent(hDC, wglCreateContext(hDC));
 	
 	// create and compile shader programs
-	pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
+	pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment_frag);
 	#if POST_PASS
-		pidPost = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
+		pidPost = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post_frag);
 	#endif
 
 	// initialize sound
