@@ -10,11 +10,11 @@ Leviathan is a simple "framework" for developing small (around 1-8 kilobyte) [De
 * Easy to customize for your needs.
 
 ## Compatibility
-Current version intended to be used with Visual Studio 2017 (any version). Make sure you have a version with the latest Windows SDK installed (at least version 10.0.17134.0), or use version 8.1. With some extra configuration 2015 and 2013 should work as well. Leviathan is is very Windows-specific and isn't really sensibly portable anywhere else.
+Current version intended to be used with Visual Studio 2022 (any version). Make sure you have a version with the latest Windows SDK installed (at least version 10.0.22000.0), or use version 8.1. With some extra configuration 2017, 2015 and 2013 should work as well. Leviathan is is very Windows-specific and isn't really sensibly portable anywhere else.
 
 ### Components
 Leviathan requires these componens to be installed with the Visual Studio configuration. Run the Visual Studio Installer to check you have at least these installed:
-* **VC++ 2017 version 15.9 v14.16 latest v141 tools**, or VC++ 2015.3 v14.00 (v140)
+* **VC++ 2022 version v17.1.0**, VC++ 2017 version 15.9 v14.16 latest v141 tools, or VC++ 2015.3 v14.00 (v140)
 * **Windows 10 SDK** (any version should be fine, Leviathan currently defaults to 10.0.17134.0, change as needed) or Windows 8.1 SDK
 * Windows Universal CRT SDK
 * Windows Universal C Runtime
