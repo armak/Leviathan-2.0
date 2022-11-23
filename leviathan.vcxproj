@@ -270,6 +270,10 @@ shader_minifier.exe -v -o src\shaders\post.inl src\shaders\post.frag</Command>
 shader_minifier.exe -v -o src\shaders\post.inl src\shaders\post.frag</Command>
       <Message>Minify user-supplied shader files.</Message>
     </PreBuildEvent>
+    <PreLinkEvent>
+      <Command>yasm -Xvc -f win32 -o src\4klang\4klang.obj src\4klang\4klang.asm</Command>
+      <Message>Compile 4klang asm file with user provided inc file</Message>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -361,6 +365,10 @@ shader_minifier.exe -v -o src\shaders\post.inl src\shaders\post.frag</Command>
 shader_minifier.exe -v -o src\shaders\post.inl src\shaders\post.frag</Command>
       <Message>Minify user-supplied shader files.</Message>
     </PreBuildEvent>
+    <PreLinkEvent>
+      <Command>yasm -Xvc -f win32 -o src\4klang\4klang.obj src\4klang\4klang.asm</Command>
+      <Message>Compile 4klang asm file with user provided inc file</Message>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Heavy Release|Win32'">
     <Midl>
@@ -454,6 +462,10 @@ shader_minifier.exe -v -o src\shaders\post.inl src\shaders\post.frag</Command>
       <Command>shader_minifier.exe -v -o src\shaders\fragment.inl src\shaders\fragment.frag</Command>
       <Message>Minify user-supplied shader files.</Message>
     </PreBuildEvent>
+    <PreLinkEvent>
+      <Message>Compile 4klang asm file with user provided inc file</Message>
+      <Command>yasm -Xvc -f win32 -o src\4klang\4klang.obj src\4klang\4klang.asm</Command>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Snapshot|Win32'">
     <Midl>
@@ -554,6 +566,10 @@ shader_minifier.exe -v -o src\shaders\post.inl src\shaders\post.frag</Command>
 shader_minifier.exe -v -o src\shaders\post.inl src\shaders\post.frag</Command>
       <Message>Minify user-supplied shader files.</Message>
     </PreBuildEvent>
+    <PreLinkEvent>
+      <Command>yasm -Xvc -f win32 -o src\4klang\4klang.obj src\4klang\4klang.asm</Command>
+      <Message>Compile 4klang asm file with user provided inc file</Message>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\editor.h">

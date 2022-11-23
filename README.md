@@ -19,6 +19,16 @@ Leviathan requires these componens to be installed with the Visual Studio config
 * Windows Universal CRT SDK
 * Windows Universal C Runtime
 
+### 4klang
+`src/4klang/4klang.asm` is taken from [http://4klang.untergrund.net/](http://4klang.untergrund.net/), current version is **3.11** for 4k. 
+
+When you export your song it should provide you two files
+* `4klang.h`
+* `4klang.inc`
+
+Copy these files to `src/4klang`. 
+
+When Visual Studio is building your project it will use provided `yasm.exe` to compile *4klang* files. `yasm.exe` is taken from [https://yasm.tortall.net/](https://yasm.tortall.net/) More information about *4klang* and *yasm* can be found: [https://github.com/hzdgopher/4klang](https://github.com/hzdgopher/4klang)
 ## Configurations
 This section describes the different build configurations available from Visual Studio IDE
 ### Heavy Release
