@@ -83,9 +83,13 @@ int __cdecl main(int argc, char* argv[])
 		Leviathan::Editor editor = Leviathan::Editor();
 		editor.updateShaders(&pidMain, &pidPost, true);
 
-		// absolute path always works here
-		// relative path works only when not ran from visual studio directly
-		Leviathan::Song track(L"audio.wav");
+		#if USE_AUDIO
+			// absolute path always works here
+			// relative path works only when not ran from visual studio directly
+			Leviathan::Song track(L"audio.wav");
+		#else
+			Leviathan::NoSong track;
+		#endif
 		track.play();
 		double position = 0.0;
 	#endif
